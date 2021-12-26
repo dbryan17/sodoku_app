@@ -71,6 +71,8 @@ function checkUnq(num, x, y) {
         }
     });
 
+    // test comment 
+
 
     if(not) {
         return false
@@ -141,7 +143,7 @@ function populateBoard(diff) {
 
 
 
-    
+
 
 
 }
