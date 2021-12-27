@@ -168,7 +168,7 @@ window.addEventListener("load", () => {
 
 
 
-    // TODO async? 
+    // TODO async?  --- make some shit promises
 
 
     document.querySelector("#easybtn").addEventListener("click", (evt) => {
