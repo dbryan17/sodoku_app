@@ -1,8 +1,10 @@
 //// generate sodoku board 
 
+
 const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 var counter = 0;
+
 
 
 // can eventually add more complex shiit like solvable using given strageiges 
@@ -263,8 +265,9 @@ function backtrackingFill(partial_board) {
 }
 
 
-function solveBoard(partial_solution) { 
 
+// NOTE this will say full board is not solvable
+function solveBoard(partial_solution) { 
     // optim
     if(counter > 1) {
         return false
@@ -311,8 +314,10 @@ function solveBoard(partial_solution) {
             for(let c = 0; c < poss.length; c++) {
                 partial_solution[xi][yi] = poss[c]
                 if(solveBoard(partial_solution)) {
-                    counter++;  
+                    counter++;
                 }
+           
+                
             }
 
 
@@ -351,55 +356,150 @@ function solveBoard(partial_solution) {
 
 function createFinal(solution_board, n) {
 
+         // return solution_board
 
+    // would fix that here, pick a random cell, if we can't take away that cell, try different, if no different cells work, go out a layer  - might be handled
+    // needs to be a loop
+
+    // get all nonempty cells 
+    // let poss = []
+  
+    // solution_board.forEach(arr => arr.forEach(el => {
+    //     if(el !== "-1") {
+    //         poss.push(el);
+
+    //     }
+    // }));
+
+    // shuffleArray(poss);
+    //for()
+    // poss.forEach(el => {
+    //     el = "-1";
+    //     counter = 0;
+    //     solveBoard(solution_board.map(arr => arr.map(el => el)));
+    //     if(counter !== 1) {
+    //         return createFinal(old_board, n);
+    //     } else {
+    //         let newn = n - 1;
+    //         return createFinal(solution_board, newn)
+    //     }
+    // });
+
+    // backtrack , may need to add a random one back, or the one we just did would be better 
+    /// return;
+
+
+    // have to do this because solution board sticks around after moving out a call for some reason 
+    // let sol_board = solution_board.map(arr => arr.map(el => el))
 
 
     if(n === 0) {
         return solution_board
     }
 
-    let x = getRandomInt(9);
-    let y = getRandomInt(9);
+    // let x = getRandomInt(9);
+    // let y = getRandomInt(9);
 
-    const old_board = solution_board.map(arr => arr.map(el => el));
-
-    // would fix that here, pick a random cell, if we can't take away that cell, try different, if no different cells work, go out a layer  - might be handled
-    if(solution_board[x][y] !== "-1") {
-        solution_board[x][y] = "-1";
-    } else {
-        return createFinal(solution_board, n)
-    }
     
 
-    counter = 0;
-    let b = solveBoard(solution_board.map(arr => arr.map(el => el)));
-    // console.log(b)
-    // console.log(counter);
-    
-    if(counter !== 1) {
-        console.log("good")
-        console.log(counter);
-        console.log("n")
-        console.log(n)
-        return createFinal(old_board, n);
 
-    } else {
-        console.log(counter);
-        console.log("n")
-        console.log(n);
-        let newn = n - 1;
-        return createFinal(solution_board, newn)
+    let poss = []
+
+    for(let i = 0; i < 9; i++) {
+        for(let j = 0; j < 9; j++) {
+            if(solution_board[i][j] !== "-1") {
+                poss.push([i,j]);
+            }
+        }
     }
 
-    // think I need to check more than just x, y because it could throw off other possiblities
+    shuffleArray(poss);
+
+    let old_board = solution_board.map(arr => arr.map(el => el));
+
+    for(let i = 0; i < poss.length; i++) {
+        counter = 0;
+        solution_board[poss[i][0]][poss[i][1]] = "-1";
+        solveBoard(solution_board.map(arr => arr.map(el => el)));
+        if(counter === 1) {
+            let newn = n - 1;
+            toR = createFinal(solution_board, newn);
+            if(toR !== false) {
+                return toR
+            } 
+        }
+        solution_board = old_board.map(arr => arr.map(el => el));
+    }
+    console.log("here");
+    console.log(n);
+    return false; 
+
+
+
+    // let poss = []
 
     // solution_board.forEach(arr => arr.forEach(el => {
-    //     // each element 
-    //     // if -1, see if there is any possiblities for it, furthermore, need to try to
-    // }))
+    //     if(el !== "-1") {
+    //         poss.push(el);
+    //     }
+    // }));
 
-    // check to see if there is one and only one solution
 
+    // console.log(poss.length);
+
+    // for(let i = 0; i < poss.length; i ++) {
+    //     poss[i] = "-1";
+    //     console.log(poss);
+    //     console.log(solution_board);
+    
+    //     counter = 0;
+    //     solveBoard(solution_board.map(arr => arr.map(el => el)));
+    //     if(counter === 1) {
+    //         console.log(n);
+    //         let newn = n -1;
+    //         return createFinal(solution_board, newn);
+    //     } 
+    // }
+
+    
+
+
+
+
+///////// THIS WORKS JUST DONESNT BACKTRACK
+    // if(solution_board[x][y] !== "-1") {
+    //     solution_board[x][y] = "-1";
+    // } else {
+    //     return createFinal(solution_board, n)
+    // }
+    
+
+
+
+    // counter = 0;
+    // solveBoard(solution_board.map(arr => arr.map(el => el)));
+    // // console.log(b)
+    // // console.log(counter);
+    
+    // if(counter !== 1) {
+    //     console.log("good")
+    //     console.log(counter);
+    //     console.log("n")
+    //     console.log(n)
+    //     return createFinal(old_board, n);
+
+    // } else {
+    //     console.log(counter);
+    //     console.log("n")
+    //     console.log(n);
+    //     let newn = n - 1;
+    //     return createFinal(solution_board, newn)
+    // }
+
+
+
+
+////// 
 
 
 
@@ -430,9 +530,22 @@ function fillGrid() {
     const full_board = backtrackingFill(board);
 
 
-    const givens = 27;
+    const givens = 22;
 
     const final_board = createFinal(full_board, 81 - givens);
+    console.log(final_board);
+    counter = 0;
+    solveBoard(final_board)
+    if(counter !== 1) {
+        console.log(counter)
+        console.log("this should not happen")
+
+    }
+
+    if(!checkBoard(final_board)) {
+        return board;
+    }
+
 
 
 
