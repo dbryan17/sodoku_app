@@ -1,6 +1,7 @@
 "use strict";
 
 
+
 function createBoard() {
     const table = document.createElement("table");
     table.id = "sodoku-table";
@@ -149,6 +150,20 @@ function populateBoard(diff) {
 }
 
 
+function populateWithArray(arr) {
+
+    for(let i = 0; i < 9; i++) {
+        for(let j = 0; j < 9; j++) {
+            let cell = document.querySelector(`#cell${i.toString()}${j.toString()}`);
+            cell.value = arr[i][j];
+            cell.disabled = true;
+        }
+    }
+
+
+}
+
+
 window.addEventListener("load", () => {
 
 
@@ -161,7 +176,9 @@ window.addEventListener("load", () => {
         document.querySelector("#btn-container").remove();
         const board = createBoard();
         document.querySelector("#sodoku-container").appendChild(board);
-        populateBoard(0);
+        //populateBoard(0);
+        populateWithArray(fillGrid());
+
     });
 
     document.querySelector("#mediumbtn").addEventListener("click", (evt) => {
