@@ -2,6 +2,8 @@
 
 const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
+var counter = 0;
+
 
 // can eventually add more complex shiit like solvable using given strageiges 
 
@@ -89,6 +91,45 @@ function shuffleArray(array) {
 }
 
 
+function getPossibilities(x, y, board) {
+    // get the numbers this space could possibly be 
+    let poss = numbers.map(n => n);
+
+    // get rid others in row
+    for(let i = 0; i < 9; i++) {
+        let toD = poss.indexOf(board[x][i]);
+        if(toD !== -1) {
+            poss.splice(toD, 1)
+        }
+    }
+
+    // collumn
+    for(let j = 0; j < 9; j++) {
+        let toD = poss.indexOf(board[j][y])
+        if(toD !== -1) {
+            poss.splice(toD, 1);
+        }
+    }
+
+    // square
+    const bigRow = Math.floor(x/3);
+    const bigCol = Math.floor(y/3);
+
+    // bigRow * 3 + 3
+    // bigCol * 3 + 3
+    for(let row = bigRow * 3; row < bigRow * 3 + 3; row++) {
+        for(let col = bigCol * 3; col < bigCol * 3 + 3; col++) {
+            let toD = poss.indexOf(board[row][col])
+            if(toD !== -1) {
+                poss.splice(toD, 1);
+            }
+        }
+    }
+
+    return poss
+}
+
+
 function backtrackingFill(partial_board) {
 
 
@@ -103,6 +144,9 @@ function backtrackingFill(partial_board) {
     //     return partial_board
     // }
 
+
+
+    // TODO make this a function
 
     // find next empty 
     let empty = false
@@ -123,7 +167,7 @@ function backtrackingFill(partial_board) {
 
     // found correct solution because it is correct and now we know that it is full 
     if(!empty) {
-        return true
+        return partial_board;
     }
 
 
@@ -133,44 +177,62 @@ function backtrackingFill(partial_board) {
         for(let yi = y; y < 9; y++) {
 
 
-            // get the numbers this space could possibly be 
-            let poss = numbers.map(n => n);
+            let poss = getPossibilities(x, y, partial_board);
+
+
+            // below is slightly faster becuase don't go all the way to 9 when don't need to 
+
+            // // get the numbers this space could possibly be 
+            // let poss = numbers.map(n => n);
             
-            // get rid others in row
-            for(let i = 0; i < yi; i++) {
-                poss.splice(poss.indexOf(partial_board[xi][i]), 1)
-            }
+            // // get rid others in row
+            // for(let i = 0; i < yi; i++) {
+            //     poss.splice(poss.indexOf(partial_board[xi][i]), 1)
+            // }
 
-            // collumn
-            for(let j = 0; j < xi; j++) {
-                let toD = poss.indexOf(partial_board[j][yi])
-                if(toD !== -1) {
-                    poss.splice(toD, 1);
-                }
-            }
+            // // collumn
+            // for(let j = 0; j < xi; j++) {
+            //     let toD = poss.indexOf(partial_board[j][yi])
+            //     if(toD !== -1) {
+            //         poss.splice(toD, 1);
+            //     }
+            // }
 
-            // square
-            const bigRow = Math.floor(x/3);
-            const bigCol = Math.floor(y/3);
+            // // square
+            // const bigRow = Math.floor(x/3);
+            // const bigCol = Math.floor(y/3);
         
-            // bigRow * 3 + 3
-            // bigCol * 3 + 3
-            for(let row = bigRow * 3; row < bigRow * 3 + 3; row++) {
-                for(let col = bigCol * 3; col < bigCol * 3 + 3; col++) {
-                    let toD = poss.indexOf(partial_board[row][col])
-                    if(toD !== -1) {
-                        poss.splice(toD, 1);
-                    }
-                }
-            }
+            // // bigRow * 3 + 3
+            // // bigCol * 3 + 3
+            // for(let row = bigRow * 3; row < bigRow * 3 + 3; row++) {
+            //     for(let col = bigCol * 3; col < bigCol * 3 + 3; col++) {
+            //         let toD = poss.indexOf(partial_board[row][col])
+            //         if(toD !== -1) {
+            //             poss.splice(toD, 1);
+            //         }
+            //     }
+            // }
 
-
+        
 
 
             shuffleArray(poss);
+
+            // TODO try to make this work
+
+            // poss.forEach(el => {
+            //     partial_board[xi][yi] = el;
+            //     if(backtrackingFill(partial_board)) {
+            //         return partial_board;
+            //     }
+                
+            // });
+            // partial_board[xi][yi] = "-1"
+            // return false;
             
             // get random array of options left 
             for(let c = 0; c < poss.length; c++) {
+                // TODO this could be cleaner
                 partial_board[xi][yi] = poss[c];
                 if(backtrackingFill(partial_board)) {
                     return partial_board;
@@ -189,7 +251,7 @@ function backtrackingFill(partial_board) {
 
         }
         y = 0
-        x = x++;
+        x++;
     }
 
     //return true;
@@ -201,19 +263,157 @@ function backtrackingFill(partial_board) {
 }
 
 
+function solveBoard(partial_solution) { 
 
-// function recursiveFill() {
+    // optim
+    if(counter > 1) {
+        return false
+    }
 
-//     // base case 
+    // generates all possible solutions 
 
-//     // check finish
 
-//     // add to possible solution
+    // find next empty 
+    let empty = false
+    for(let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            if(partial_solution[i][j] === "-1") {
+                var x = i;
+                var y = j;
+                empty = true;
+                break;
+            }
+        }
+        if(empty){
+            break;
+        }
+
+    }
+
+    // found correct solution because it is correct and now we know that it is full 
+    if(!empty) {
+        return true;
+    }
+
+
+    for(let xi = x; x < 9; x++) {
+        for(let yi = y; y < 9; y++) {
+
+
+            let poss = getPossibilities(x, y, partial_solution);
+
+
+
+            if(poss.length === 0) {
+                return false;
+            }
+
+            for(let c = 0; c < poss.length; c++) {
+                partial_solution[xi][yi] = poss[c]
+                if(solveBoard(partial_solution)) {
+                    counter++;  
+                }
+            }
+
+
+            // go back a layer, none of the option worked, for some reason partial_solution sicks around 
+            // so have to set it to -1
+            partial_solution[xi][yi] = "-1"
+            return false;
+
+
+        }
+        y = 0
+        x++;
+    }
+
+
+
+    // // check the number of solutions
+    // if(!backtrackingFill(tmp)) {
+    //     return false
+    // } else {
+    //     return true
+        
+    // }
+
+
+
+
+
+        
+
+}
+
+
+// TODO this doesn't really back track enough, never pops off something, only goes through all n, if nothing, infinate recursion most likely 
+// maybe not, think about it more 
+
+function createFinal(solution_board, n) {
+
+
+
+
+    if(n === 0) {
+        return solution_board
+    }
+
+    let x = getRandomInt(9);
+    let y = getRandomInt(9);
+
+    const old_board = solution_board.map(arr => arr.map(el => el));
+
+    // would fix that here, pick a random cell, if we can't take away that cell, try different, if no different cells work, go out a layer  - might be handled
+    if(solution_board[x][y] !== "-1") {
+        solution_board[x][y] = "-1";
+    } else {
+        return createFinal(solution_board, n)
+    }
     
-// }
+
+    counter = 0;
+    let b = solveBoard(solution_board.map(arr => arr.map(el => el)));
+    // console.log(b)
+    // console.log(counter);
+    
+    if(counter !== 1) {
+        console.log("good")
+        console.log(counter);
+        console.log("n")
+        console.log(n)
+        return createFinal(old_board, n);
+
+    } else {
+        console.log(counter);
+        console.log("n")
+        console.log(n);
+        let newn = n - 1;
+        return createFinal(solution_board, newn)
+    }
+
+    // think I need to check more than just x, y because it could throw off other possiblities
+
+    // solution_board.forEach(arr => arr.forEach(el => {
+    //     // each element 
+    //     // if -1, see if there is any possiblities for it, furthermore, need to try to
+    // }))
+
+    // check to see if there is one and only one solution
+
+
+
+
+
+
+
+}
+
+
+
+
 
 function fillGrid() {
-    const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    //const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 
     let board = [];
@@ -227,31 +427,28 @@ function fillGrid() {
     }
 
 
-    let x = 0;
-    let y = 0;
+    const full_board = backtrackingFill(board);
 
 
-    // really need to make this backtracking
+    const givens = 27;
 
-    // while(true) {
-    //     console.log("here")
-    //     console.log(x);
-    //     if(y === 9) {
-    //         y = 0;
-    //         x++;
-    //     }
-    //     if(x === 9) {
-    //         console.log("FINISH")
-    //         break;
-    //     }
-    //     let tmp = numbers[getRandomInt(9)];
-    //     if(generCheckUnq(tmp, x, y, board)) {
-    //         board[x][y] = tmp;
-    //         y++;
-    //     }
-    // }
+    const final_board = createFinal(full_board, 81 - givens);
 
-    // now have completed board
+
+
+    if(!checkBoard(full_board)) {
+        return board;
+    }
+
+    // now we have a full board....
+
+    return final_board;
+
+
+
+
+
+
 
     
 
@@ -262,19 +459,6 @@ function fillGrid() {
     //     })
 
     // })
-
-    const full_board = backtrackingFill(board);
-
-    if(!checkBoard(full_board)) {
-        return board;
-    }
-
-
-  
-
-
-
-    return full_board;
 
 
 

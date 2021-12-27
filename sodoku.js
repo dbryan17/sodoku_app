@@ -40,6 +40,8 @@ function getRandomInt(max) {
 
 
 
+
+// TODO make this return the number(s) it conflixts with so I can display a dot or something 
 function checkUnq(num, x, y) {
     
     // check block
@@ -111,7 +113,6 @@ function populateBoard(diff) {
         let num = numbers[getRandomInt(9)];
         num = num.toString();
 
-        //console.log(cell.value)
 
 
 
@@ -152,15 +153,16 @@ function populateBoard(diff) {
 
 function populateWithArray(arr) {
 
+
     for(let i = 0; i < 9; i++) {
         for(let j = 0; j < 9; j++) {
-            let cell = document.querySelector(`#cell${i.toString()}${j.toString()}`);
-            cell.value = arr[i][j];
-            cell.disabled = true;
+            if(arr[i][j] !== "-1") {
+                let cell = document.querySelector(`#cell${i.toString()}${j.toString()}`);
+                cell.value = arr[i][j];
+                cell.disabled = true;
+            }
         }
     }
-
-
 }
 
 
@@ -177,6 +179,8 @@ window.addEventListener("load", () => {
         const board = createBoard();
         document.querySelector("#sodoku-container").appendChild(board);
         //populateBoard(0);
+
+        // TODO make fill grid return a promise and display loading message here 
         populateWithArray(fillGrid());
 
     });
