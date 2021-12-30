@@ -47,7 +47,9 @@
     /* border: 1px solid black; */
 }
 
-input {
+.bigN {
+    /* position:absolute; */
+    z-index: -1;
     border: hidden;
     /* this makes it so the broswer doesn't have a highligh box */
     outline: none;
@@ -63,13 +65,32 @@ input {
     color: darkslategray;
 }
 
-input:disabled {
+.bigN:invalid {
+    border: red solid 45px;
+  }
+
+.bigN:disabled {
     color: black;
 }
 
-input:focus {
+.bigN:focus {
     border: 2px solid blue;
 }
+
+.notesC {
+    position:absolute;
+    z-index:1;
+    /* display:inline-block; */
+    width: 60px;
+    height: 60px;
+    /* font-size:1px; */
+} 
+
+.noteT {
+    font-size: 10px;
+}
+
+
 
 
 

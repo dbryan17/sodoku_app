@@ -1,5 +1,7 @@
 "use strict";
 
+let notes = false;
+
 
 
 function createBoard() {
@@ -17,14 +19,59 @@ function createBoard() {
         for(let j=0; j < 9; j++) {
             let cell = document.createElement("td");
             cell.classList.add("cell", `row${i.toString()}`, `col${j.toString()}`);
+
+           
+
+
             // cell.innerText = 4;
         
             let input = document.createElement("input");
             // TODO maybe have this be part of cell too or just part of cell
             input.id = `cell${i.toString()}${j.toString()}`;
+            input.classList.add("bigN")
             input.type = "text";
+            input.pattern = "/[1-9]/";
+
+            input.maxLength = "1"
+
+            // input.type = "number"
+            // input.min = "1"
+
+        
+            input.autocomplete = "off";
+
+            //let notes = document.createElement("input");
+            
+    
             cell.appendChild(input);
             row.appendChild(cell); 
+
+
+            let notesContainer = document.createElement("div");
+            notesContainer.classList.add("notesC")
+            
+            for(let a = 0; a < 3; a++) {
+                let notesRow = document.createElement("div");
+                notesContainer.appendChild(notesRow);
+                for(let b = 0; b < 3; b++) {
+                    let note = document.createElement("div");
+                    //note.innerText="1"
+                    notesRow.appendChild(note);
+                    
+                    let noteT = document.createElement("input")
+                    noteT.classList.add("noteT");
+                    noteT.value = "1"
+         
+
+                    
+                }
+                cell.appendChild(notesContainer);
+
+            }
+
+
+
+
 
         }
     }
@@ -37,6 +84,8 @@ function createBoard() {
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
+
+
 
 
 
@@ -170,7 +219,8 @@ window.addEventListener("load", () => {
 
 
 
-    // TODO async?  --- make some shit promises
+
+    // TODO async?  --- make some shit promises - homemade
 
 
     document.querySelector("#easybtn").addEventListener("click", (evt) => {
@@ -201,5 +251,15 @@ window.addEventListener("load", () => {
         populateBoard(2);
     });
 
+    document.addEventListener("keydown", (evt) => {
+        evt.preventDefault;
+        if(evt.key === "Tab") {
+            if(notes){
+                notes = false
+            } else {
+                notes = true;
+            }
+        }
+    });
 });
 
