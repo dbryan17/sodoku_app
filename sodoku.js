@@ -1,7 +1,15 @@
 "use strict";
 
-let notes = false;
+// let notes = false;
 
+
+
+/*
+
+Think the solution is to wrap it all in a div and make input abolsute psotioning, problem is that container for the two 
+is last div not td
+
+*/
 
 
 function createBoard() {
@@ -20,6 +28,11 @@ function createBoard() {
             let cell = document.createElement("td");
             cell.classList.add("cell", `row${i.toString()}`, `col${j.toString()}`);
 
+
+            let textContainer = document.createElement("div");
+            textContainer.classList.add("textContainer");
+
+
            
 
 
@@ -30,7 +43,7 @@ function createBoard() {
             input.id = `cell${i.toString()}${j.toString()}`;
             input.classList.add("bigN")
             input.type = "text";
-            input.pattern = "/[1-9]/";
+            // input.pattern = "/[1-9]/";
 
             input.maxLength = "1"
 
@@ -43,8 +56,7 @@ function createBoard() {
             //let notes = document.createElement("input");
             
     
-            cell.appendChild(input);
-            row.appendChild(cell); 
+            
 
 
             let notesContainer = document.createElement("div");
@@ -52,20 +64,38 @@ function createBoard() {
             
             for(let a = 0; a < 3; a++) {
                 let notesRow = document.createElement("div");
+                notesRow.classList.add("notesRow");
                 notesContainer.appendChild(notesRow);
                 for(let b = 0; b < 3; b++) {
+                    
+                    
                     let note = document.createElement("div");
-                    //note.innerText="1"
+
+                    note.classList.add("note");
+
+                    note.classList.add(`note${((a+1) * 3) - (2 - b)}`)
+
+
+
+
+
+                    // let noteT = document.createElement("input")
+                    // noteT.classList.add("noteT");
+                    // noteT.value = "1"
+                    
+                    // note.appendChild(noteT);
+                    //note.innerText="";
                     notesRow.appendChild(note);
                     
-                    let noteT = document.createElement("input")
-                    noteT.classList.add("noteT");
-                    noteT.value = "1"
+                    
          
 
                     
                 }
-                cell.appendChild(notesContainer);
+                textContainer.appendChild(input);
+                textContainer.appendChild(notesContainer);
+                cell.appendChild(textContainer);
+                row.appendChild(cell); 
 
             }
 
@@ -214,9 +244,54 @@ function populateWithArray(arr) {
     }
 }
 
+function createCheckbox() {
+
+    const parser = new DOMParser();
+
+    const checkbox = parser.parseFromString(`
+        <div>
+            <input type="checkbox" id="notesCheckbox" name="notesCheckbox">
+            <label for="notesCheckbox">Notes Mode?</label>
+        </div>
+    `, "text/html");
+
+
+
+    document.querySelector("#notes-checkbox-container").appendChild(checkbox.body.firstElementChild);
+
+
+    
+}
+
+function enterNumber() {
+
+
+    // add or delete note 
+    if(document.querySelector("#notesCheckbox").checked) {
+        let note = this.parentElement.querySelector(`.note${this.value}`);
+        if(note.innerText == this.value) {
+            note.innerText = "";
+        }
+        else if(this.value == "") {
+            this.parentElement.querySelector(".notesC").style.display = "inline"
+        } 
+        else {
+            note.innerText = this.value;
+        }
+        this.value = "";
+    } 
+    else {
+        if(this.value == "") {
+            this.parentElement.querySelector(".notesC").style.display = "inline"
+        } else {
+            this.parentElement.querySelector(".notesC").style.display = "none"
+        }
+
+    }
+}
+
 
 window.addEventListener("load", () => {
-
 
 
 
@@ -232,6 +307,18 @@ window.addEventListener("load", () => {
 
         // TODO make fill grid return a promise and display loading message here 
         populateWithArray(fillGrid());
+        createCheckbox();
+        document.querySelectorAll(".bigN").forEach(el => {
+    
+            el.addEventListener("input", enterNumber);
+            // also need to make it so you don't need to delete input to enter new number and non 1-9 does nothing
+            el.addEventListener("keydown", evt => {
+                if(evt.key === "Backspace" || evt.key === "Delete") {
+                    // make function to delete all of the inner text - not just hide 
+                }
+            });
+        });
+
 
     });
 
@@ -254,12 +341,26 @@ window.addEventListener("load", () => {
     document.addEventListener("keydown", (evt) => {
         evt.preventDefault;
         if(evt.key === "Tab") {
-            if(notes){
-                notes = false
+            evt.preventDefault;
+
+            if(document.querySelector("#notesCheckbox").checked){
+                document.querySelector("#notesCheckbox").checked = false;
+
             } else {
-                notes = true;
+                document.querySelector("#notesCheckbox").checked = true;
             }
+
+
+            // if(notes){
+            //     notes = false
+            // } else {
+            //     notes = true;
+            // }
         }
     });
+
+    
+    
+
 });
 

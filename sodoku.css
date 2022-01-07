@@ -39,7 +39,7 @@
     display: inline-block;
 }
 .cell {
-    display: inline-block; 
+    display: inline-block;  
     /* text-align: center; */
     /* border: 1px solid black; */
     /* width: 60px;
@@ -47,9 +47,17 @@
     /* border: 1px solid black; */
 }
 
+.textContainer {
+    position: relative;
+    margin: auto;
+    width: 60px;
+    height: 60px;
+}
+
 .bigN {
-    /* position:absolute; */
-    z-index: -1;
+    position:absolute;
+    background-color: transparent;
+    z-index: 1;
     border: hidden;
     /* this makes it so the broswer doesn't have a highligh box */
     outline: none;
@@ -65,10 +73,6 @@
     color: darkslategray;
 }
 
-.bigN:invalid {
-    border: red solid 45px;
-  }
-
 .bigN:disabled {
     color: black;
 }
@@ -79,16 +83,51 @@
 
 .notesC {
     position:absolute;
-    z-index:1;
-    /* display:inline-block; */
+    margin: auto;
+    /* border: 5px; */
+    z-index: -1;
     width: 60px;
     height: 60px;
+
+    /* display: inline; */
+    /* display:inline-block; */
     /* font-size:1px; */
 } 
 
-.noteT {
-    font-size: 10px;
+.notesRow {
+    position: relative;
+    margin: auto;
+    height: 20px;
+    
 }
+
+.note {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin: auto;
+    width: 33.3333%;
+    text-align: center;
+    color: darkslategray;
+}
+
+
+
+
+
+
+/* 
+.note {
+    z-index: 2;
+} */
+
+/* .noteT {
+    position: absolute;
+    font-size: 10px;
+} */
+
+
+
 
 
 
