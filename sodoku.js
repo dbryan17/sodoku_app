@@ -1,5 +1,7 @@
 "use strict";
 
+//let oldVal = "";
+
 // let notes = false;
 
 
@@ -257,38 +259,83 @@ function createCheckbox() {
 
 
 
+    // make this function return this and append it in main 
     document.querySelector("#notes-checkbox-container").appendChild(checkbox.body.firstElementChild);
 
 
     
 }
 
+function oneThroughNine(numStr) {
+    return ["1", "2", "3", "4", "5", "6", "7", "8", "9"].filter(num => numStr === num).length === 1;
+}
+
+
+
+
+
+// function called when a number is inputted, here before it actually gets placed - number only inputted when input is empty
 function enterNumber() {
 
 
-    // add or delete note 
+    // need to handle what happens when it is a junk number 
+
+
+
+
+    // if notes mode - add or delete note -
     if(document.querySelector("#notesCheckbox").checked) {
-        let note = this.parentElement.querySelector(`.note${this.value}`);
-        if(note.innerText == this.value) {
-            note.innerText = "";
-        }
-        else if(this.value == "") {
-            this.parentElement.querySelector(".notesC").style.display = "inline"
-        } 
-        else {
-            note.innerText = this.value;
-        }
-        this.value = "";
-    } 
-    else {
+
+        // if backsapce, bring back all of the old hidden notes - if there was nothing there orginally, other thing will actaully delete them
         if(this.value == "") {
             this.parentElement.querySelector(".notesC").style.display = "inline"
-        } else {
+        }
+
+        // if one through nine, either add or delete 
+        if(oneThroughNine(this.value)) {
+            let note = this.parentElement.querySelector(`.note${this.value}`);
+            if(note.innerText == this.value) {
+                note.innerText = "";
+            }
+
+            else {
+                note.innerText = this.value;
+            }
+
+           
+        } 
+       
+        // no matter what, want value to be zero while in notes mode 
+        this.value = ""
+    
+        
+        // notes mode is not clicked 
+    } else {
+        // if it is a delete, bring back old hidden notes 
+        if(this.value == "") {
+            this.parentElement.querySelector(".notesC").style.display = "inline"
+
+            
+        } 
+
+        
+        // if not one through nine - set to nothing
+        else if(!oneThroughNine(this.value)) {
+            this.value = "";
+
+        }
+
+        // legit value 
+        else {
+            // hide notes 
             this.parentElement.querySelector(".notesC").style.display = "none"
         }
 
     }
 }
+
+
+
 
 
 window.addEventListener("load", () => {
@@ -308,15 +355,41 @@ window.addEventListener("load", () => {
         // TODO make fill grid return a promise and display loading message here 
         populateWithArray(fillGrid());
         createCheckbox();
+        // register event lisnters for all of the input fields 
         document.querySelectorAll(".bigN").forEach(el => {
-    
-            el.addEventListener("input", enterNumber);
-            // also need to make it so you don't need to delete input to enter new number and non 1-9 does nothing
+            // on keydown
             el.addEventListener("keydown", evt => {
-                if(evt.key === "Backspace" || evt.key === "Delete") {
-                    // make function to delete all of the inner text - not just hide 
-                }
+
+                // if it is a backspace and there is nothing in the value, delete all notes 
+                if((evt.key === "Backspace" || evt.key === "Delete") && el.value == "") {
+                    el.parentElement.querySelectorAll(".note").forEach(n => n.innerText = "");
+                    
+
+                    // if the checkbox isn't checked, the number is one through nine, and the value isn't zero
+                } else if(!document.querySelector("#notesCheckbox").checked && oneThroughNine(evt.key) && el.value !== "") {
+
+                    // set the value to the number - override
+                    el.value = evt.key
+
+
+                    // if it isn't 1-9, save the old value 
+                } 
+                
+                // else if(!oneThroughNine(evt.key)) {
+                //     oldVal = el.value
+
+                // }
+
+           
+        
             });
+
+            // extra checks before adding the value 
+            el.addEventListener("input", enterNumber);
+
+            // value gets added as normal - could be set to "" now though
+
+            
         });
 
 
@@ -339,9 +412,9 @@ window.addEventListener("load", () => {
     });
 
     document.addEventListener("keydown", (evt) => {
-        evt.preventDefault;
+        
         if(evt.key === "Tab") {
-            evt.preventDefault;
+            evt.preventDefault();
 
             if(document.querySelector("#notesCheckbox").checked){
                 document.querySelector("#notesCheckbox").checked = false;
