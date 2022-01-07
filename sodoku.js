@@ -1,17 +1,7 @@
 "use strict";
 
-//let oldVal = "";
+let errors = [];
 
-// let notes = false;
-
-
-
-/*
-
-Think the solution is to wrap it all in a div and make input abolsute psotioning, problem is that container for the two 
-is last div not td
-
-*/
 
 
 function createBoard() {
@@ -111,39 +101,38 @@ function createBoard() {
     return table;
 }
 
-
-
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
 
-
-
-
-
 // TODO make this return the number(s) it conflixts with so I can display a dot or something 
 function checkUnq(num, x, y) {
+
+
+    let toReturn = new Set();
     
     // check block
     const bigRow = Math.floor(x/3);
     const bigCol = Math.floor(y/3);
 
+
+
     for(let i = bigRow * 3; i < bigRow * 3 + 3; i++) {
         for(let j = bigCol * 3; j < bigCol * 3 + 3; j++) {
             if(document.querySelector(`#cell${i.toString()}${j.toString()}`).value === num) {
-                return false;
+                toReturn.add(document.querySelector(`#cell${i.toString()}${j.toString()}`));
             }
         }
     }
     
 
-    let not = false;
+    
 
     // check row
     document.querySelectorAll(`.row${x.toString()} input`).forEach(node => {
         if(node.value === num) {
-            not = true;
+            toReturn.add(node)
         }
     });
 
@@ -151,85 +140,15 @@ function checkUnq(num, x, y) {
     // check collumn 
     document.querySelectorAll(`.col${y.toString()} input`).forEach(node => {
         if(node.value === num) {
-            not = true
+            toReturn.add(node);
         }
     });
 
-    // test comment 
+    return toReturn;
 
-
-    if(not) {
-        return false
-    } else {
-        return true
-    }
-
+    
 
 }
-
-// // populate board given difficultity
-// function populateBoard(diff) {
-
-//     const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-//     let givens
-
-
-//     if(diff === 0) {
-//         // todo make this reasonable
-//         givens = getRandomInt(4) + 30
-//         //givens = 20
-//     } else if (diff === 1) {
-//         givens = getRandomInt(3) + 15
-
-//     } else {
-//         givens = getRandomInt(2) + 13
-//     }
-
-//     for(let i = 0; i < givens; i++) {
-        
-//         // get random elements
-//         let x = getRandomInt(9);
-//         let y = getRandomInt(9)
-//         let cell = document.querySelector(`#cell${x.toString()}${y.toString()}`);
-//         let num = numbers[getRandomInt(9)];
-//         num = num.toString();
-
-
-
-
-//         // TODO check unqie given num and cell 
-//         let unq = checkUnq(num, x, y);
-
-//         if(unq) {
-//             cell.value = num
-//             cell.disabled = true;
-
-//             // TODO this isnt working
-//         } else {
-//             i--;
-//         }
-
-        
-
-//     }
-
-
-//     // TODO check if there is only one solution - maybe do this before in like an array, or just do it here and repopulate
-
-//     // also check if there is a solution period
-
-//     // this is gonna be big... can you solve the puzzle without guessing?? a lot goes into setting sodokus..
-//     // https://f-puzzles.com/  https://www.101computing.net/sudoku-generator-algorithm/   https://www.youtube.com/watch?v=Ui1hrp7rovw
-
-//     // def use backtracking and other stuff from algs for solving the puzzle and checking if you won
-
-
-
-
-
-
-
-// }
 
 
 function populateWithArray(arr) {
@@ -270,8 +189,51 @@ function oneThroughNine(numStr) {
     return ["1", "2", "3", "4", "5", "6", "7", "8", "9"].filter(num => numStr === num).length === 1;
 }
 
+function highlightErrors(num, el) {
 
+    // set of values 
+    let highlight = checkUnq(num, parseInt(el.id.charAt(4)), parseInt(el.id.charAt(5)))
+    console.log(num);
+    console.log(highlight)
 
+    highlight.delete(el);
+
+    // need to get rid of old erros TODO
+
+    if(highlight.size > 0) {
+        highlight.forEach(e => errors.push([el, e]));
+
+        // no errors 
+    } else {
+        errors.forEach(p => p.forEach(e => {
+            if(e.disabled) {
+                e.style.color = "black"
+            } else {
+                e.style.color = "darkslategray"
+            }
+        }));
+        // if this node was FIRST VAL of an error, get rid of it
+        errors = errors.filter(p => p[0] !== el);
+            
+        
+
+    }
+
+    console.log(errors);
+
+    // set all errors to red
+    errors.forEach(p => {
+        p[0].style.color = "red";
+        p[1].style.color = "red";
+    });
+
+    
+
+    
+
+    //highlight.forEach(n => n.style.color = "revert")
+
+}
 
 
 // function called when a number is inputted, here before it actually gets placed - number only inputted when input is empty
@@ -288,7 +250,8 @@ function enterNumber() {
 
         // if backsapce, bring back all of the old hidden notes - if there was nothing there orginally, other thing will actaully delete them
         if(this.value == "") {
-            this.parentElement.querySelector(".notesC").style.display = "inline"
+            this.parentElement.querySelector(".notesC").style.display = "inline";
+            highlightErrors(11, this)
         }
 
         // if one through nine, either add or delete 
@@ -313,7 +276,9 @@ function enterNumber() {
     } else {
         // if it is a delete, bring back old hidden notes 
         if(this.value == "") {
-            this.parentElement.querySelector(".notesC").style.display = "inline"
+            this.parentElement.querySelector(".notesC").style.display = "inline";
+            highlightErrors(11, this)
+            
 
             
         } 
@@ -330,10 +295,17 @@ function enterNumber() {
             // hide notes 
             this.parentElement.querySelector(".notesC").style.display = "none"
 
+            // check if valid and highlight
+            highlightErrors(this.value, this)
+
             
         }
 
     }
+
+
+
+    
 }
 
 function navigate(el, key) {
@@ -407,9 +379,23 @@ function navigate(el, key) {
 
 }
 
+function checkF() {
 
+    for(let x = 0; x < 9; x++) {
+        for(let y = 0; y < 9; y++) {
+            if(document.querySelector(`#cell${x}${y}`) === "") {
+                return false
+            }
+        }
+    }
+    return true;
+}
 
-
+function displayWin() {
+    let win_div = document.createElement("div")
+    win_div.innertext = "YOU WON - NICE JOB"
+    document.querySelector(".container").appendChild(win_div);
+}
 
 window.addEventListener("load", () => {
 
@@ -450,6 +436,7 @@ window.addEventListener("load", () => {
 
                     // set the value to the number - override
                     el.value = evt.key
+                    highlightErrors(el.value, el)
 
 
                     // if it isn't 1-9, save the old value 
@@ -464,13 +451,13 @@ window.addEventListener("load", () => {
             // extra checks before adding the value 
             el.addEventListener("input", enterNumber);
 
-
-            // highlight this and all other conflicting cells if there is a conflict, when the cell is deleted or resolved, undo
+            // number added and errors checked, if board is full you are done 
+            if(checkF && errors.length === 0) {
+                displayWin()
+            }
 
 
             
-
-
 
             // value gets added as normal - could be set to "" now though
 
@@ -521,12 +508,6 @@ window.addEventListener("load", () => {
                 document.querySelector("#notesCheckbox").checked = true;
             }
 
-
-            // if(notes){
-            //     notes = false
-            // } else {
-            //     notes = true;
-            // }
         }
     });
 
