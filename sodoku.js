@@ -167,69 +167,69 @@ function checkUnq(num, x, y) {
 
 }
 
-// populate board given difficultity
-function populateBoard(diff) {
+// // populate board given difficultity
+// function populateBoard(diff) {
 
-    const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-    let givens
+//     const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+//     let givens
 
 
-    if(diff === 0) {
-        // todo make this reasonable
-        givens = getRandomInt(4) + 30
-        //givens = 20
-    } else if (diff === 1) {
-        givens = getRandomInt(3) + 15
+//     if(diff === 0) {
+//         // todo make this reasonable
+//         givens = getRandomInt(4) + 30
+//         //givens = 20
+//     } else if (diff === 1) {
+//         givens = getRandomInt(3) + 15
 
-    } else {
-        givens = getRandomInt(2) + 13
-    }
+//     } else {
+//         givens = getRandomInt(2) + 13
+//     }
 
-    for(let i = 0; i < givens; i++) {
+//     for(let i = 0; i < givens; i++) {
         
-        // get random elements
-        let x = getRandomInt(9);
-        let y = getRandomInt(9)
-        let cell = document.querySelector(`#cell${x.toString()}${y.toString()}`);
-        let num = numbers[getRandomInt(9)];
-        num = num.toString();
+//         // get random elements
+//         let x = getRandomInt(9);
+//         let y = getRandomInt(9)
+//         let cell = document.querySelector(`#cell${x.toString()}${y.toString()}`);
+//         let num = numbers[getRandomInt(9)];
+//         num = num.toString();
 
 
 
 
-        // TODO check unqie given num and cell 
-        let unq = checkUnq(num, x, y);
+//         // TODO check unqie given num and cell 
+//         let unq = checkUnq(num, x, y);
 
-        if(unq) {
-            cell.value = num
-            cell.disabled = true;
+//         if(unq) {
+//             cell.value = num
+//             cell.disabled = true;
 
-            // TODO this isnt working
-        } else {
-            i--;
-        }
+//             // TODO this isnt working
+//         } else {
+//             i--;
+//         }
 
         
 
-    }
+//     }
 
 
-    // TODO check if there is only one solution - maybe do this before in like an array, or just do it here and repopulate
+//     // TODO check if there is only one solution - maybe do this before in like an array, or just do it here and repopulate
 
-    // also check if there is a solution period
+//     // also check if there is a solution period
 
-    // this is gonna be big... can you solve the puzzle without guessing?? a lot goes into setting sodokus..
-    // https://f-puzzles.com/  https://www.101computing.net/sudoku-generator-algorithm/   https://www.youtube.com/watch?v=Ui1hrp7rovw
+//     // this is gonna be big... can you solve the puzzle without guessing?? a lot goes into setting sodokus..
+//     // https://f-puzzles.com/  https://www.101computing.net/sudoku-generator-algorithm/   https://www.youtube.com/watch?v=Ui1hrp7rovw
 
-    // def use backtracking and other stuff from algs for solving the puzzle and checking if you won
-
-
-
+//     // def use backtracking and other stuff from algs for solving the puzzle and checking if you won
 
 
 
 
-}
+
+
+
+// }
 
 
 function populateWithArray(arr) {
@@ -329,9 +329,82 @@ function enterNumber() {
         else {
             // hide notes 
             this.parentElement.querySelector(".notesC").style.display = "none"
+
+            
         }
 
     }
+}
+
+function navigate(el, key) {
+
+    let count = 0 
+    let c;
+
+
+    // navigate with arrows and WASD
+    if(key === "w" || key === "ArrowUp") {
+        let row = (((parseInt(el.id.charAt(4)) - 1) % 9) + 9) % 9
+        c = document.querySelector(`#cell${row}${el.id.charAt(5)}`);
+        while(c.disabled == true) {
+            count++;
+            row = (((row - 1) % 9) + 9) % 9
+            c = document.querySelector(`#cell${row}${el.id.charAt(5)}`);
+            // in case entire row is disabled
+            if(count > 9) {
+                break;
+            }
+        }
+    
+        
+        
+    } else if(key === "s" || key === "ArrowDown") {
+        let row = (((parseInt(el.id.charAt(4)) + 1) % 9) + 9) % 9;
+        c = document.querySelector(`#cell${row}${el.id.charAt(5)}`);
+        while(c.disabled == true) {
+            count++;
+            row = (((row + 1) % 9) + 9) % 9
+            c = document.querySelector(`#cell${row}${el.id.charAt(5)}`);
+            // in case entire row is disabled
+            if(count > 9) {
+                break;
+            }
+        }
+     
+
+    } else if(key === "a" || key === "ArrowLeft") {
+        let col = (((parseInt(el.id.charAt(5)) - 1) % 9) + 9) % 9;
+        c = document.querySelector(`#cell${el.id.charAt(4)}${col}`);
+        while(c.disabled == true) {
+            count++;
+            col = (((col - 1) % 9) + 9) % 9
+            c = document.querySelector(`#cell${el.id.charAt(4)}${col}`);
+            // in case entire row is disabled
+            if(count > 9) {
+                break;
+            }
+        }
+       
+    } else if(key === "d" || key === "ArrowRight") {
+        let col = (((parseInt(el.id.charAt(5)) + 1) % 9) + 9) % 9;
+        c = document.querySelector(`#cell${el.id.charAt(4)}${col}`);
+        while(c.disabled == true) {
+            count++;
+            col = (((col + 1) % 9) + 9) % 9
+            c = document.querySelector(`#cell${el.id.charAt(4)}${col}`);
+            // in case entire row is disabled
+            if(count > 9) {
+                break;
+            }
+        }
+       
+
+    }
+
+    c.focus();
+    el.style.focus = false;
+
+
 }
 
 
@@ -346,6 +419,7 @@ window.addEventListener("load", () => {
 
 
     document.querySelector("#easybtn").addEventListener("click", (evt) => {
+
         evt.preventDefault;
         document.querySelector("#btn-container").remove();
         const board = createBoard();
@@ -359,6 +433,12 @@ window.addEventListener("load", () => {
         document.querySelectorAll(".bigN").forEach(el => {
             // on keydown
             el.addEventListener("keydown", evt => {
+
+                if(["w", "ArrowUp", "a", "ArrowLeft", "s", "ArrowDown", "d", "ArrowRight"].filter(k => evt.key === k).length === 1) {
+                    navigate(el, evt.key);
+
+                }
+
 
                 // if it is a backspace and there is nothing in the value, delete all notes 
                 if((evt.key === "Backspace" || evt.key === "Delete") && el.value == "") {
@@ -375,10 +455,7 @@ window.addEventListener("load", () => {
                     // if it isn't 1-9, save the old value 
                 } 
                 
-                // else if(!oneThroughNine(evt.key)) {
-                //     oldVal = el.value
 
-                // }
 
            
         
@@ -387,10 +464,31 @@ window.addEventListener("load", () => {
             // extra checks before adding the value 
             el.addEventListener("input", enterNumber);
 
+
+            // highlight this and all other conflicting cells if there is a conflict, when the cell is deleted or resolved, undo
+
+
+            
+
+
+
             // value gets added as normal - could be set to "" now though
 
             
         });
+
+        // focus on random square
+        let x = getRandomInt(9)
+        let y = getRandomInt(9) 
+        let ce = document.querySelector(`#cell${x}${y}`);
+        while(ce.disabled == true) {
+            x = getRandomInt(9)
+            y = getRandomInt(9) 
+            ce = document.querySelector(`#cell${x}${y}`);
+        }
+        ce.focus();
+
+
 
 
     });
