@@ -191,35 +191,33 @@ function oneThroughNine(numStr) {
 
 function highlightErrors(num, el) {
 
-    // set of values 
+    // set of values that is errors made by new insertion 
     let highlight = checkUnq(num, parseInt(el.id.charAt(4)), parseInt(el.id.charAt(5)))
-    console.log(num);
-    console.log(highlight)
-
+    // get rid of this value 
     highlight.delete(el);
 
-    // need to get rid of old erros TODO
 
+    // set all errors back to orginal color 
+    errors.forEach(p => p.forEach(e => {
+        if(e.disabled) {
+            e.style.color = "black"
+        } else {
+            e.style.color = "darkslategray"
+        }
+    }));
+
+    // get rid of any errors that this element previously causes 
+    errors = errors.filter(p => p[0] !== el);
+
+
+    // if there is any new errros
     if(highlight.size > 0) {
+        // add them to the errors list 
         highlight.forEach(e => errors.push([el, e]));
 
         // no errors 
-    } else {
-        errors.forEach(p => p.forEach(e => {
-            if(e.disabled) {
-                e.style.color = "black"
-            } else {
-                e.style.color = "darkslategray"
-            }
-        }));
-        // if this node was FIRST VAL of an error, get rid of it
-        errors = errors.filter(p => p[0] !== el);
-            
-        
+    } 
 
-    }
-
-    console.log(errors);
 
     // set all errors to red
     errors.forEach(p => {
@@ -228,9 +226,6 @@ function highlightErrors(num, el) {
     });
 
     
-
-    
-
     //highlight.forEach(n => n.style.color = "revert")
 
 }
