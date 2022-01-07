@@ -298,9 +298,26 @@ function enterNumber() {
 
     }
 
+    
+    // needs to be set timeout so the value actually gets added 
+    setTimeout(checkWin, 10);
+
 
 
     
+}
+
+function checkWin() {
+    // number added and errors checked, if board is full you are done 
+    if(checkF() && errors.length === 0) {
+        console.log("here")
+        let win_div = document.createElement("div")
+        win_div.innerText = "YOU WON - NICE JOB"
+        document.querySelector(".container").insertBefore(win_div, document.querySelector("#sodoku-container"));
+        console.log(document.querySelector(".#sodoku-container"));
+        console.log(win_div);
+    }
+
 }
 
 function navigate(el, key) {
@@ -378,7 +395,7 @@ function checkF() {
 
     for(let x = 0; x < 9; x++) {
         for(let y = 0; y < 9; y++) {
-            if(document.querySelector(`#cell${x}${y}`) === "") {
+            if(document.querySelector(`#cell${x}${y}`).value === "") {
                 return false
             }
         }
@@ -386,11 +403,7 @@ function checkF() {
     return true;
 }
 
-function displayWin() {
-    let win_div = document.createElement("div")
-    win_div.innertext = "YOU WON - NICE JOB"
-    document.querySelector(".container").appendChild(win_div);
-}
+
 
 window.addEventListener("load", () => {
 
@@ -432,6 +445,7 @@ window.addEventListener("load", () => {
                     // set the value to the number - override
                     el.value = evt.key
                     highlightErrors(el.value, el)
+                    setTimeout(checkWin, 10);
 
 
                     // if it isn't 1-9, save the old value 
@@ -446,13 +460,6 @@ window.addEventListener("load", () => {
             // extra checks before adding the value 
             el.addEventListener("input", enterNumber);
 
-            // number added and errors checked, if board is full you are done 
-            if(checkF && errors.length === 0) {
-                displayWin()
-            }
-
-
-            
 
             // value gets added as normal - could be set to "" now though
 

@@ -530,7 +530,7 @@ function fillGrid() {
     const full_board = backtrackingFill(board);
 
 
-    const givens = 30;
+    const givens = 79;
 
     const final_board = createFinal(full_board, 81 - givens);
     console.log(final_board);
