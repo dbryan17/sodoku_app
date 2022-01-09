@@ -3,6 +3,10 @@
  */
 
 
+/**
+ think the best way to do this is get array of all options and check strategies from there 
+ */
+
 
 // stratgegy you often start with - easiest - only one place a certain number can go in a 3x3 area
 function onlyOptionInGroup(board) {

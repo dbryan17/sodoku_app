@@ -248,6 +248,7 @@ function enterNumber() {
 
 
     // need to handle what happens when it is a junk number 
+    helpReset();
 
 
 
@@ -322,8 +323,6 @@ function enterNumber() {
 function checkWin() {
 
     // this happens everytime a number is added, so update help button here MOVE THIS
-    helpReset();
-
     // number added and errors checked, if board is full you are done 
     if(checkF() && errors.length === 0) {
         console.log("here")
@@ -462,8 +461,13 @@ function getHelp() {
         let c = document.querySelector(`#cell${help[0][0].toString()}${help[0][1].toString()}`);
         c.focus();
     } else if(help_stage === 2) {
-        document.querySelector(`#cell${help[0][0].toString()}${help[0][1].toString()}`).value = help[1];
+        let c = document.querySelector(`#cell${help[0][0].toString()}${help[0][1].toString()}`)
+        c.value = help[1];
         helpReset();
+        // maybe make a function for shit to do on insert of a number
+        highlightErrors(help[1], c)
+        setTimeout(checkWin, 10);
+
         
     }
 }
@@ -580,6 +584,7 @@ window.addEventListener("load", () => {
 
                     // set the value to the number - override
                     el.value = evt.key
+                    helpReset();
                     highlightErrors(el.value, el)
                     setTimeout(checkWin, 10);
 
