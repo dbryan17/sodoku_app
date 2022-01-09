@@ -105,8 +105,6 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-
-// TODO make this return the number(s) it conflixts with so I can display a dot or something 
 function checkUnq(num, x, y) {
 
 
@@ -386,7 +384,7 @@ function navigate(el, key) {
     }
 
     c.focus();
-    el.style.focus = false;
+    //el.style.focus = false;
 
 
 }
@@ -404,7 +402,6 @@ function checkF() {
 }
 
 
-
 window.addEventListener("load", () => {
 
 
@@ -412,16 +409,21 @@ window.addEventListener("load", () => {
     // TODO async?  --- make some shit promises - homemade
 
 
-    document.querySelector("#easybtn").addEventListener("click", (evt) => {
 
-        evt.preventDefault;
-        document.querySelector("#btn-container").remove();
+    document.querySelector("#inputForm").addEventListener("submit", (evt) => {
+
+
+        let givens = document.querySelector("#slider").value;
+        //evt.preventDefault;
+        document.querySelector("#range-container").remove();
         const board = createBoard();
         document.querySelector("#sodoku-container").appendChild(board);
         //populateBoard(0);
-
         // TODO make fill grid return a promise and display loading message here 
-        populateWithArray(fillGrid());
+        populateWithArray(fillGrid(givens));
+        let instructions = document.createElement("p");
+        instructions.innerText = "You can move around with arrow keys and switch in and out of notes mode with the tab key"
+        document.querySelector("#sodoku-container").appendChild(instructions);
         createCheckbox();
         // register event lisnters for all of the input fields 
         document.querySelectorAll(".bigN").forEach(el => {
@@ -482,21 +484,8 @@ window.addEventListener("load", () => {
 
     });
 
-    document.querySelector("#mediumbtn").addEventListener("click", (evt) => {
-        evt.preventDefault;
-        document.querySelector("#btn-container").remove();
-        const board = createBoard();
-        document.querySelector("#sodoku-container").appendChild(board);
-        populateBoard(1);
-    });
 
-    document.querySelector("#hardbtn").addEventListener("click", (evt) => {
-        evt.preventDefault;
-        document.querySelector("#btn-container").remove();
-        const board = createBoard();
-        document.querySelector("#sodoku-container").appendChild(board);
-        populateBoard(2);
-    });
+
 
     document.addEventListener("keydown", (evt) => {
         

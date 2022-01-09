@@ -512,7 +512,7 @@ function createFinal(solution_board, n) {
 
 
 
-function fillGrid() {
+function fillGrid(givens) {
     //const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 
@@ -530,7 +530,7 @@ function fillGrid() {
     const full_board = backtrackingFill(board);
 
 
-    const givens = 79;
+    // const givens = 79;
 
     const final_board = createFinal(full_board, 81 - givens);
     console.log(final_board);
