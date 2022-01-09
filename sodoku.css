@@ -1,7 +1,7 @@
 .container {
     position: relative;
-    width: 90%;
-    height: 90%;
+    width: 80%;
+    height: 80%;
     margin: auto;
 }
 
@@ -11,27 +11,21 @@
     margin: auto;
 }
 
-
-/*#sodoku-table {
-    /* margin: auto !important; */
-    /* width: 95%;
-    margin-left: auto;
-    margin-right: auto; */
-
-    /* background-color: blue; */
-    /* border: 5px solid black; */
-/* }  */
-
-/* #sodoku-body {
-    width: 558px;
-    margin: auto;
-}  */
-
+#help-section-container {
+    /* width: 400px; */
+    width: 30%;
+    /* height: 800px; */
+    /* display: inline-block; */
+    float: left;
+}
 
 #sodoku-container {
-    width: 800px;
-    height: 800px;
-    margin: auto;
+    /* width: 800px; */
+    width: 600px;
+    /* height: 800px; */
+    /* margin: auto; */
+    /* display: inline-block; */
+    float: left;
 }
 
 .row {

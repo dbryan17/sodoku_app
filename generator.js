@@ -3,6 +3,9 @@
 
 const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
+let solution_b;
+
+
 var counter = 0;
 
 
@@ -135,16 +138,6 @@ function getPossibilities(x, y, board) {
 function backtrackingFill(partial_board) {
 
 
-    // abanden partial solution if incorrect ---- dont need this but might improve runtime 
-    // if(!checkBoard(partial_board)) {
-    //     return false;
-
-    // }
-
-    // return complete solution --- might need this??? - doesn't seem like it 
-    // if(checkFull(partial_board) && checkBoard(partial_board)) {
-    //     return partial_board
-    // }
 
 
 
@@ -529,11 +522,18 @@ function fillGrid(givens) {
 
     const full_board = backtrackingFill(board);
 
+    //solution_b = full_board.map(arr => arr.map(el => parseInt(el)));
+    solution_b = full_board.map(arr => arr.map(el => el));
+
+    
+
+    
+
 
     // const givens = 79;
 
     const final_board = createFinal(full_board, 81 - givens);
-    console.log(final_board);
+    
     counter = 0;
     solveBoard(final_board)
     if(counter !== 1) {
@@ -554,6 +554,10 @@ function fillGrid(givens) {
     }
 
     // now we have a full board....
+
+    
+
+    //solution_b = full_board;
 
     return final_board;
 

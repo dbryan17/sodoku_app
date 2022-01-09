@@ -2,6 +2,12 @@
 
 let errors = [];
 
+let help_stage = 0;
+
+let help;
+
+let help_highlights = [];
+
 
 
 function createBoard() {
@@ -179,8 +185,16 @@ function createCheckbox() {
     // make this function return this and append it in main 
     document.querySelector("#notes-checkbox-container").appendChild(checkbox.body.firstElementChild);
 
+}
 
-    
+function createHelpButton() {
+    const parser = new DOMParser();
+
+    const helpbtn = parser.parseFromString(`
+        <button id="helpbtn" type="button">Help?</button> 
+    `, "text/html");
+
+    document.querySelector("#help-button-container").appendChild(helpbtn.body.firstElementChild);
 }
 
 function oneThroughNine(numStr) {
@@ -306,6 +320,10 @@ function enterNumber() {
 }
 
 function checkWin() {
+
+    // this happens everytime a number is added, so update help button here MOVE THIS
+    helpReset();
+
     // number added and errors checked, if board is full you are done 
     if(checkF() && errors.length === 0) {
         console.log("here")
@@ -401,6 +419,121 @@ function checkF() {
     return true;
 }
 
+function helpReset() {
+    document.querySelector("#helpbtn").innerText = "Help?";
+    help_stage = 0; 
+
+    // reset colors of all highlights 
+    help_highlights.forEach(e => {
+        if(e.disabled) {
+            e.style.color = "black"
+        } else {
+            e.style.color = "darkslategray"
+        }
+    });
+
+    help_highlights = [];
+
+}
+
+function helpHighlighter(cords) {
+    console.log(cords)
+
+    cords.forEach(cord => {
+        console.log(cord[0])
+        console.log(document.querySelector(`#cell${cord[0]}${cord[1]}`))
+        help_highlights.push(document.querySelector(`#cell${cord[0]}${cord[1]}`))
+    });
+
+    help_highlights.forEach(el => {
+        el.style.color = "orange"
+    });
+    
+}
+
+function getHelp() {
+
+    // help = [cell cord ([y, x]), [answer], [cells to highlight]]
+
+    if(help_stage === 0) {
+        help = getInitialHelp()
+    } else if(help_stage === 1) {
+        getMoreHelp(help[2]);
+        let c = document.querySelector(`#cell${help[0][0].toString()}${help[0][1].toString()}`);
+        c.focus();
+    } else if(help_stage === 2) {
+        document.querySelector(`#cell${help[0][0].toString()}${help[0][1].toString()}`).value = help[1];
+        helpReset();
+        
+    }
+}
+
+
+
+function getMoreHelp(toH) {
+    helpHighlighter(toH);
+    document.querySelector("#helpbtn").innerText = "reveal cell?";
+    help_stage++;
+}
+
+function getInitialHelp() {
+
+
+    // solution board is global as solution_b
+
+    // get the current board as array 
+    let current_b = []
+
+    for(let i = 0; i < 9; i++) {
+        let row = []
+        for(let j = 0; j<9; j++) {
+            let v = document.querySelector(`#cell${i}${j}`).value;
+            if(v === "") {
+                v = "-1"
+            } 
+            row.push(v)
+        }
+        current_b.push(row);
+    }
+
+    
+
+    // filter out wrong answers 
+    for(let i = 0; i < 9; i++) {
+        for(let j = 0; j < 9; j++) {
+            if(current_b[i][j] !== solution_b[i][j]) {
+                current_b[i][j] = "-1";
+            }
+        }
+    }
+
+
+    // TEST
+
+    // MAKE IT RETURN WHAT WE WILL EVENTUALLY HIGHLIGHT TO HELP AND ANSWER AND CELL TO FOCUS ON 
+
+    // get a naked single 
+
+    let naked_single = nakedSingle(current_b);
+    if(naked_single) {
+        // make this a function - used in navigate too 
+        let c = document.querySelector(`#cell${naked_single[0][0].toString()}${naked_single[0][1].toString()}`);
+        c.focus();
+        document.querySelector("#helpbtn").innerText = "more help?";
+        help_stage = 1;
+        //console.log(naked_single)
+        return naked_single;
+        //helpHighlighter(naked_single[2]);
+        
+        
+
+        
+    }
+
+}
+
+
+
 
 window.addEventListener("load", () => {
 
@@ -425,6 +558,7 @@ window.addEventListener("load", () => {
         instructions.innerText = "You can move around with arrow keys and switch in and out of notes mode with the tab key"
         document.querySelector("#sodoku-container").appendChild(instructions);
         createCheckbox();
+        createHelpButton();
         // register event lisnters for all of the input fields 
         document.querySelectorAll(".bigN").forEach(el => {
             // on keydown
@@ -478,6 +612,9 @@ window.addEventListener("load", () => {
             ce = document.querySelector(`#cell${x}${y}`);
         }
         ce.focus();
+
+        // event listner for help button 
+        document.querySelector("#helpbtn").addEventListener("click", getHelp);
 
 
 
