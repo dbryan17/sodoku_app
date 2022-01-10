@@ -540,6 +540,86 @@ function getInitialHelp() {
 }
 
 
+async function startGame(givens) {
+
+
+    const board = createBoard();
+    let grid = await fillGrid(givens);
+    document.querySelector("#sodoku-container").appendChild(board);
+    //populateBoard(0);
+
+    // TODO make fill grid return a promise and display loading message here 
+    
+    populateWithArray(grid);
+    // populateWithArray(fillGrid(givens));
+
+
+
+    let instructions = document.createElement("p");
+    instructions.innerText = "You can move around with arrow keys and switch in and out of notes mode with the tab key"
+    document.querySelector("#sodoku-container").appendChild(instructions);
+    createCheckbox();
+    createHelpButton();
+    // register event lisnters for all of the input fields 
+    document.querySelectorAll(".bigN").forEach(el => {
+        // on keydown
+        el.addEventListener("keydown", evt => {
+
+            if(["w", "ArrowUp", "a", "ArrowLeft", "s", "ArrowDown", "d", "ArrowRight"].filter(k => evt.key === k).length === 1) {
+                navigate(el, evt.key);
+
+            }
+
+
+            // if it is a backspace and there is nothing in the value, delete all notes 
+            if((evt.key === "Backspace" || evt.key === "Delete") && el.value == "") {
+                el.parentElement.querySelectorAll(".note").forEach(n => n.innerText = "");
+                
+
+                // if the checkbox isn't checked, the number is one through nine, and the value isn't zero
+            } else if(!document.querySelector("#notesCheckbox").checked && oneThroughNine(evt.key) && el.value !== "") {
+
+                // set the value to the number - override
+                el.value = evt.key
+                helpReset();
+                highlightErrors(el.value, el)
+                setTimeout(checkWin, 10);
+
+
+                // if it isn't 1-9, save the old value 
+            } 
+            
+
+
+       
+    
+        });
+
+        // extra checks before adding the value 
+        el.addEventListener("input", enterNumber);
+
+
+        // value gets added as normal - could be set to "" now though
+
+        
+    });
+
+    // focus on random square
+    let x = getRandomInt(9)
+    let y = getRandomInt(9) 
+    let ce = document.querySelector(`#cell${x}${y}`);
+    while(ce.disabled == true) {
+        x = getRandomInt(9)
+        y = getRandomInt(9) 
+        ce = document.querySelector(`#cell${x}${y}`);
+    }
+    ce.focus();
+
+    // event listner for help button 
+    document.querySelector("#helpbtn").addEventListener("click", getHelp);
+
+
+}
 
 
 window.addEventListener("load", () => {
@@ -556,73 +636,8 @@ window.addEventListener("load", () => {
         let givens = document.querySelector("#slider").value;
         //evt.preventDefault;
         document.querySelector("#range-container").remove();
-        const board = createBoard();
-        document.querySelector("#sodoku-container").appendChild(board);
-        //populateBoard(0);
-        // TODO make fill grid return a promise and display loading message here 
-        populateWithArray(fillGrid(givens));
-        let instructions = document.createElement("p");
-        instructions.innerText = "You can move around with arrow keys and switch in and out of notes mode with the tab key"
-        document.querySelector("#sodoku-container").appendChild(instructions);
-        createCheckbox();
-        createHelpButton();
-        // register event lisnters for all of the input fields 
-        document.querySelectorAll(".bigN").forEach(el => {
-            // on keydown
-            el.addEventListener("keydown", evt => {
 
-                if(["w", "ArrowUp", "a", "ArrowLeft", "s", "ArrowDown", "d", "ArrowRight"].filter(k => evt.key === k).length === 1) {
-                    navigate(el, evt.key);
-
-                }
-
-
-                // if it is a backspace and there is nothing in the value, delete all notes 
-                if((evt.key === "Backspace" || evt.key === "Delete") && el.value == "") {
-                    el.parentElement.querySelectorAll(".note").forEach(n => n.innerText = "");
-                    
-
-                    // if the checkbox isn't checked, the number is one through nine, and the value isn't zero
-                } else if(!document.querySelector("#notesCheckbox").checked && oneThroughNine(evt.key) && el.value !== "") {
-
-                    // set the value to the number - override
-                    el.value = evt.key
-                    helpReset();
-                    highlightErrors(el.value, el)
-                    setTimeout(checkWin, 10);
-
-
-                    // if it isn't 1-9, save the old value 
-                } 
-                
-
-
-           
-        
-            });
-
-            // extra checks before adding the value 
-            el.addEventListener("input", enterNumber);
-
-
-            // value gets added as normal - could be set to "" now though
-
-            
-        });
-
-        // focus on random square
-        let x = getRandomInt(9)
-        let y = getRandomInt(9) 
-        let ce = document.querySelector(`#cell${x}${y}`);
-        while(ce.disabled == true) {
-            x = getRandomInt(9)
-            y = getRandomInt(9) 
-            ce = document.querySelector(`#cell${x}${y}`);
-        }
-        ce.focus();
-
-        // event listner for help button 
-        document.querySelector("#helpbtn").addEventListener("click", getHelp);
+        startGame(givens);
 
 
 

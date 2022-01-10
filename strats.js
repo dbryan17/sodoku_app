@@ -4,6 +4,10 @@
 
 
 // TODOTODOTDOTDOTODOTOD - for all reduce the amount of cells that it highlights to all that you need 
+/// next add skyscapres and see what help that gives you, just go through each grid and if there are any numbers with less than 3
+/// options check if they are in the same row or col, and if they are elimate all of those numbers from that row or col
+/// myabe do this multiple times to get more, there can be like a 1 level skyscraper, then 2, maybe 3, after that probs not getting any more
+/// but could check, from there can search for x and y wings 
 
 
 const strats = [onlyOptionInGroup, onlyOptionInRow, onlyOptionInCol, nakedSingle];

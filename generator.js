@@ -328,7 +328,7 @@ function createFinal(solution_board, n) {
 }
 
 
-function fillGrid(givens) {
+async function fillGrid(givens) {
 
     let board = [];
 
@@ -340,31 +340,69 @@ function fillGrid(givens) {
         }
     }
 
-    const full_board = backtrackingFill(board);
+    if(givens < 26) {
 
-    solution_b = full_board.map(arr => arr.map(el => el));
+        let resp;
 
-    const final_board = createFinal(full_board, 81 - givens);
+        if(givens == 21) {
+            resp = await fetch("/boards1.json");
+
+            
+        } else {
+            resp = await fetch("/boards.json");
+        }
+        let data = await resp.json();
+
+        let boards = data[givens - 17].boards;
+
+  
+
+        let toGet = getRandomInt(boards.length);
+
+
+        const final_board = boards[toGet];
+
+        
+        final_board_c = final_board.map(arr => arr.map(el => el))
+        const full_board = backtrackingFill(final_board_c);
     
-    counter = 0;
-    solveBoard(final_board)
-    if(counter !== 1) {
-        console.log(counter)
-        console.log("this should not happen")
+
+        solution_b = full_board.map(arr => arr.map(el => el));
+
+        return final_board;
+  
+    } else {
+        const full_board = backtrackingFill(board);
+
+        solution_b = full_board.map(arr => arr.map(el => el));
+    
+        const final_board = createFinal(full_board, 81 - givens);
+    
+        return final_board;
 
     }
 
-    if(!checkBoard(final_board)) {
-        return board;
-    }
+
+    
+    // counter = 0;
+    // solveBoard(final_board)
+    // if(counter !== 1) {
+    //     console.log(counter)
+    //     console.log("this should not happen")
+
+    // }
+
+    // if(!checkBoard(final_board)) {
+    //     return board;
+    // }
 
 
 
 
-    if(!checkBoard(full_board)) {
-        return board;
-    }
+    // if(!checkBoard(full_board)) {
+    //     return board;
+    // }
 
-    return final_board;
+    
 
 };
