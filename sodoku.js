@@ -325,12 +325,11 @@ function checkWin() {
     // this happens everytime a number is added, so update help button here MOVE THIS
     // number added and errors checked, if board is full you are done 
     if(checkF() && errors.length === 0) {
-        console.log("here")
+
         let win_div = document.createElement("div")
         win_div.innerText = "YOU WON - NICE JOB"
         document.querySelector(".container").insertBefore(win_div, document.querySelector("#sodoku-container"));
-        console.log(document.querySelector(".#sodoku-container"));
-        console.log(win_div);
+
     }
 
 }
@@ -436,11 +435,11 @@ function helpReset() {
 }
 
 function helpHighlighter(cords) {
-    console.log(cords)
+ 
 
     cords.forEach(cord => {
-        console.log(cord[0])
-        console.log(document.querySelector(`#cell${cord[0]}${cord[1]}`))
+ 
+    
         help_highlights.push(document.querySelector(`#cell${cord[0]}${cord[1]}`))
     });
 
@@ -462,10 +461,11 @@ function getHelp() {
         c.focus();
     } else if(help_stage === 2) {
         let c = document.querySelector(`#cell${help[0][0].toString()}${help[0][1].toString()}`)
+        c.parentElement.querySelector(".notesC").style.display = "none"
         c.value = help[1];
         helpReset();
         // maybe make a function for shit to do on insert of a number
-        highlightErrors(help[1], c)
+        highlightErrors(help[1], c);
         setTimeout(checkWin, 10);
 
         
@@ -518,8 +518,11 @@ function getInitialHelp() {
 
     // get a naked single 
 
-    let naked_single = nakedSingle(current_b);
+    let naked_single = helpfcn(current_b);
+
+    //let naked_single = nakedSingle(current_b);
     if(naked_single) {
+        console.log(naked_single);
         // make this a function - used in navigate too 
         let c = document.querySelector(`#cell${naked_single[0][0].toString()}${naked_single[0][1].toString()}`);
         c.focus();
