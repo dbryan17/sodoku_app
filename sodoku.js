@@ -1,5 +1,13 @@
 "use strict";
 
+
+/**
+ * TODO - make the board objects, will be a lot easier, can contain what the person has for it, notes for it, if it was a given, 
+ * array of possiblities based on what the user has enetered correctly, maybe even more, this was can make it not input and do cool shit
+ * like the thing may wants and clicking on ones that are givens, and click and highliht drag
+ */
+
+
 let errors = [];
 
 let help_stage = 0;
